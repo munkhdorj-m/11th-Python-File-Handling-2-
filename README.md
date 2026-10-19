@@ -1,4 +1,4 @@
-# Python File Handling 1
+# Python File Handling 2
  
 Python File handling
 https://drive.google.com/file/d/1sIv9rb6PizW9sfts9eVu0BkLYWLjysiT/view
@@ -17,23 +17,28 @@ https://drive.google.com/file/d/1sIv9rb6PizW9sfts9eVu0BkLYWLjysiT/view
 
 **Problem:**
 
-`items` is a list of strings. Write them to the file, one per line, each one
-numbered starting from 1. The function returns nothing.
+`names` is a list of student names and `scores` is a list of their scores, in
+the same order. Write each student to the file on its own line as
+`name,score`. The function returns nothing.
 
 If the file already exists, the old content must be **replaced**, not added to.
 
 **Example:**
 
     Example Input:
-        items    = ["Bread", "Milk", "Eggs"]
-        filename = "shopping.txt"
+        names    = ["Bat", "Saraa", "Anu"]
+        scores   = [78, 91, 65]
+        filename = "scores.txt"
 
-    File Output (shopping.txt):
-        1. Bread
-        2. Milk
-        3. Eggs
+    File Output (scores.txt):
+        Bat,78
+        Saraa,91
+        Anu,65
 
-Note the format carefully: number, full stop, **one space**, then the item.
+Note the format carefully: name, comma, score — **no spaces**.
+
+*Hint:* `write()` only accepts strings. `str(78)` turns the number 78 into
+the string `"78"`.
 
 ---
 
@@ -41,29 +46,36 @@ Note the format carefully: number, full stop, **one space**, then the item.
 
 **Problem:**
 
-Read the file and return a **list of the names** in it, in order.
+Every line of the file looks like `name,score`. Return the **average** score,
+rounded to 1 decimal place with `round(value, 1)`.
 
-- Remove the `"\n"` and any spaces at the start or end of each name.
 - Skip any blank lines completely.
+- If the file has no students, return `0`.
 
 **Example:**
 
-    Example File Content (names.txt):
-        Bat
-
-          Saraa
-        Anu
+    Example File Content (scores.txt):
+        Bat,78
+        Saraa,91
+        Anu,65
 
     Program Output:
-        ["Bat", "Saraa", "Anu"]
+        78.0
+
+    Example File Content (scores.txt):
+        Bat,70
+        Saraa,81
+
+    Program Output:
+        75.5
 
     Example File Content (empty file):
 
     Program Output:
-        []
+        0
 
-*Hint:* `readlines()` gives you a list of lines, but each one still has `"\n"`
-stuck on the end. `.strip()` removes it.
+*Hint:* `"Saraa,91".split(",")` gives `["Saraa", "91"]`. Use `int()` on the
+second part to get the number.
 
 ---
 
@@ -71,30 +83,36 @@ stuck on the end. `.strip()` removes it.
 
 **Problem:**
 
-Add `text` to the **end** of the file as a new line, without deleting what is
-already there. Then return how many lines the file has now.
+Read the file `source`, where every line looks like `name,score`. Write a
+**new** file `destination` containing only the students whose score is
+`pass_mark` **or more**, in the same `name,score` format.
+Return how many students passed.
 
-If the file does not exist yet, it must be created.
+The `source` file must not be changed.
 
 **Example:**
 
-    Example File Content (log.txt):
-        Mon
-        Tue
+    Example File Content (all.txt):
+        Bat,78
+        Saraa,91
+        Anu,45
+        Dorj,50
 
     Example Input:
-        text = "Wed"
+        pass_mark = 50
 
-    File Content afterwards (log.txt):
-        Mon
-        Tue
-        Wed
+    File Output (passed.txt):
+        Bat,78
+        Saraa,91
+        Dorj,50
 
     Program Output:
         3
 
-*Hint:* you need to open the file twice — once in `"a"` mode to add the line,
-then again in `"r"` mode to count the lines.
+Dorj has exactly 50 — that is a pass.
+
+*Hint:* read everything from `source` and `close()` it **before** you open
+`destination`. Two files, two `open()` calls, two `close()` calls.
 
 ---
 
@@ -102,34 +120,36 @@ then again in `"r"` mode to count the lines.
 
 **Problem:**
 
-Return a list of the **line numbers** (starting at 1) of every line that
-contains `word` anywhere inside it.
+Replace every `old_word` in the file with `new_word`, and save the file.
+Return how many times the word was replaced.
 
-Capital letters must be ignored, so searching for `"python"` also finds
-`"Python"`. Return an empty list if nothing matches.
+Capital letters matter: `"cats"` does **not** match `"Cats"`.
 
 **Example:**
 
-    Example File Content (text.txt):
-        I like Python
-        Python is fun
-        Goodbye world
-        python again
+    Example File Content (story.txt):
+        I like cats.
+        Cats are cute.
+        cats sleep a lot.
 
     Example Input:
-        word = "python"
+        old_word = "cats"
+        new_word = "dogs"
+
+    File Content afterwards (story.txt):
+        I like dogs.
+        Cats are cute.
+        dogs sleep a lot.
 
     Program Output:
-        [1, 2, 4]
+        2
 
-    Example Input:
-        word = "mongolia"
+*Hint:* read the whole file with `read()`, `close()` it, then open it again
+in `"w"` mode to write the new text. If you open it with `"w"` first, the file
+is **erased** before you can read it!
 
-    Program Output:
-        []
-
-*Hint:* `"Python is fun".lower()` gives `"python is fun"`. You can check
-whether one string is inside another with `if small in big:`.
+`"red red".count("red")` gives `2`, and `"red red".replace("red", "blue")`
+gives `"blue blue"`.
 
 ---
 
@@ -137,73 +157,45 @@ whether one string is inside another with `if small in big:`.
 
 **Problem:**
 
-Read the file `source` and write a **new** file `destination` containing the
-same lines, but with a line number and a colon in front of each one.
-Return how many lines you wrote.
+Remove line number `line_number` (starting at 1) from the file, and save the
+file. Return `True` if the line was removed.
 
-The `source` file must not be changed.
+If the file has no line with that number, do **not** change the file, and
+return `False`.
 
 **Example:**
 
-    Example File Content (in.txt):
-        apple
-        banana
-        cherry
+    Example File Content (days.txt):
+        Mon
+        Tue
+        Wed
+        Thu
 
-    File Output (out.txt):
-        1: apple
-        2: banana
-        3: cherry
+    Example Input:
+        line_number = 2
+
+    File Content afterwards (days.txt):
+        Mon
+        Wed
+        Thu
 
     Program Output:
-        3
+        True
 
-Note the format: number, colon, **one space**, then the line.
+    Example Input:
+        line_number = 5
 
-*Hint:* read everything from `source` and `close()` it **before** you open
-`destination`. Two files, two `open()` calls, two `close()` calls.
+    File Content afterwards (days.txt):
+        Mon
+        Tue
+        Wed
+        Thu
 
----
+    Program Output:
+        False
 
-## Exercise 6 (Optional)
-
-**Problem:**
-
-A notes program with a menu that keeps working after you close it,
-because the notes are saved in `notes.txt`.
-
-    1. Add a note       -> ask for text, add it to the end of notes.txt
-    2. View all notes   -> print every note with a number in front
-    3. Search notes     -> ask for a word, print the notes containing it
-    4. Quit
-
-The program keeps showing the menu until the user chooses 4.
-If the user types anything else, say so and show the menu again.
-
-**Example**
-
-    --- My Notes ---
-    1. Add a note
-    2. View all notes
-    3. Search notes
-    4. Quit
-    Choose 1-4: 1
-    Write your note: Buy milk
-    Note saved.
-
-    --- My Notes ---
-    ...
-    Choose 1-4: 2
-    Your notes:
-    1. Buy milk
-    2. Study Python
-
-    --- My Notes ---
-    ...
-    Choose 1-4: 3
-    Search for: python
-    2. Study Python
-    Found 1 note(s).
+*Hint:* `readlines()` gives you a list — line 1 is `lines[0]`. Check the line
+number **before** you open the file in `"w"` mode, then write back every line
+except the one you are removing.
 
 ---
-
