@@ -1,25 +1,26 @@
 # You can remove 'pass' if you written code in the function
 # Exercise 1
-def write_shopping_list(items, filename):
+
+def save_scores(names, scores, filename):
     # Write your code here
     pass
 
 # Exercise 2
-def read_names(filename):
+def average_score(filename):
     # Write your code here
     pass
 
 # Exercise 3
-def append_entry(filename, text):
+def filter_passed(source, destination, pass_mark):
     # Write your code here
     pass
 
 # Exercise 4
-def search_file(filename, word):
+def replace_word(filename, old_word, new_word):
     # Write your code here
     pass
 
 # Exercise 5
-def number_the_lines(source, destination):
+def remove_line(filename, line_number):
     # Write your code here
     pass
